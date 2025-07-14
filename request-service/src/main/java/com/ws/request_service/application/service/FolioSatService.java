@@ -1,4 +1,4 @@
-package com.ws.request_service.infrastructure.client.service;
+package com.ws.request_service.application.service;
 
 import com.ws.request_service.infrastructure.client.SoapClient;
 import com.ws.request_service.infrastructure.client.builder.XmlBuilder;
@@ -15,13 +15,18 @@ import static com.ws.request_service.infrastructure.client.util.CryptoUtils.deco
 
 @Slf4j
 @Service
-public class EmitionSatService {
+public class FolioSatService {
 
+    @Autowired
+    @Qualifier(value = "soapClientFolio")
     private final SoapClient client;
+    @Autowired
     private final XmlBuilder builder;
+    @Autowired
     private final ResponseParser parser;
 
-    public EmitionSatService(@Qualifier(value = "soapClientEmition") SoapClient client, XmlBuilder builder, ResponseParser parser) {
+
+    public FolioSatService(SoapClient client, XmlBuilder builder, ResponseParser parser) {
         this.client = client;
         this.builder = builder;
         this.parser = parser;

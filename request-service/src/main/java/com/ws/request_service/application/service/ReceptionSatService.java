@@ -1,4 +1,4 @@
-package com.ws.request_service.infrastructure.client.service;
+package com.ws.request_service.application.service;
 
 import com.ws.request_service.infrastructure.client.SoapClient;
 import com.ws.request_service.infrastructure.client.builder.XmlBuilder;

@@ -14,7 +14,6 @@ public class SoapClient {
     private final String endpoint;
     private final String soapAction;
 
-    @Qualifier(value = "soapClientEmition")
     public SoapClient(String endpoint, String soapAction) {
         this.endpoint = endpoint;
         this.soapAction = soapAction;
