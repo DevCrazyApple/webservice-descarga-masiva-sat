@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 
 import static com.ws.auth_service.infrastructure.client.util.XmlUtils.convertStringToXMLDocument;
 
-public class AuthResponseParser {
+public class ResponseParser {
 
     /**
      * Get token of a previously obtained XML

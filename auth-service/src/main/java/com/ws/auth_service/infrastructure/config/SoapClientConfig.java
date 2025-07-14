@@ -1,8 +1,8 @@
-package com.ws.auth_service.infrastructure.client.config;
+package com.ws.auth_service.infrastructure.config;
 
 import com.ws.auth_service.infrastructure.client.SoapClient;
-import com.ws.auth_service.infrastructure.client.builder.AuthXmlBuilder;
-import com.ws.auth_service.infrastructure.client.parser.AuthResponseParser;
+import com.ws.auth_service.infrastructure.client.builder.XmlBuilder;
+import com.ws.auth_service.infrastructure.client.parser.ResponseParser;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,12 +22,12 @@ public class SoapClientConfig {
     }
 
     @Bean
-    public AuthXmlBuilder authXmlBuilder() {
-        return new AuthXmlBuilder();
+    public XmlBuilder authXmlBuilder() {
+        return new XmlBuilder();
     }
 
     @Bean
-    public AuthResponseParser authResponseParser() {
-        return new AuthResponseParser();
+    public ResponseParser authResponseParser() {
+        return new ResponseParser();
     }
 }

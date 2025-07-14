@@ -11,7 +11,7 @@ import static com.ws.auth_service.infrastructure.client.util.CryptoUtils.createD
 import static com.ws.auth_service.infrastructure.client.util.CryptoUtils.sign;
 import static com.ws.auth_service.infrastructure.client.util.XmlUtils.*;
 
-public class AuthXmlBuilder {
+public class XmlBuilder {
 
     private String created;
     private String expires;
