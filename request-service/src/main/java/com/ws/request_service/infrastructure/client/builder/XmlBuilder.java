@@ -7,9 +7,9 @@ import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import static com.ws.auth_service.infrastructure.client.util.CryptoUtils.createDigest;
-import static com.ws.auth_service.infrastructure.client.util.CryptoUtils.sign;
-import static com.ws.auth_service.infrastructure.client.util.XmlUtils.*;
+import static com.ws.request_service.infrastructure.client.util.CryptoUtils.createDigest;
+import static com.ws.request_service.infrastructure.client.util.CryptoUtils.sign;
+import static com.ws.request_service.infrastructure.client.util.XmlUtils.*;
 
 public class XmlBuilder {
 

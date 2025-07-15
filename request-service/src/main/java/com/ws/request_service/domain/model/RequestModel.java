@@ -10,10 +10,13 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class RequestModel {
     private String id;
     private String requestId;
-    private String rfc;
+    private String rfcEmisor;
+    private String rfcReceptor;
     private String requestType;
-    private LocalDateTime timestamp;
+    private String initDate;
+    private String finishDate;
 }

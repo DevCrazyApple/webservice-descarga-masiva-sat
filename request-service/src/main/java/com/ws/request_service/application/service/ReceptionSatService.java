@@ -17,16 +17,11 @@ import static com.ws.request_service.infrastructure.client.util.CryptoUtils.deco
 @Service
 public class ReceptionSatService {
 
-    @Autowired
-    @Qualifier(value = "soapClientReception")
     private final SoapClient client;
-    @Autowired
     private final XmlBuilder builder;
-    @Autowired
     private final ResponseParser parser;
 
-
-    public ReceptionSatService(SoapClient client, XmlBuilder builder, ResponseParser parser) {
+    public ReceptionSatService(@Qualifier(value = "soapClientReception") SoapClient client, XmlBuilder builder, ResponseParser parser) {
         this.client = client;
         this.builder = builder;
         this.parser = parser;

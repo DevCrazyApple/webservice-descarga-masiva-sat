@@ -15,31 +15,16 @@ public class ResponseParser {
      * @param response
      * @return
      */
-    public String extractToken(String response) {
+    public String getResult(String response) {
         Document doc = convertStringToXMLDocument(response);
 
         //Verify XML document is build correctly
         if (doc != null)
-            return doc.getElementsByTagName("AutenticaResult").item(0).getTextContent();
+            return doc.getElementsByTagName("SolicitaDescargaEmitidosResult")
+                .item(0)
+                .getAttributes()
+                .getNamedItem("IdSolicitud").getTextContent();
 
-        return null;
-    }
-
-    /**
-     * extract rfc from pem
-     * @param certificate
-     * @return
-     */
-    public String extractRfc(X509Certificate certificate) {
-        String subject = certificate.getSubjectX500Principal().toString();
-        System.out.println("Subject: " + subject);
-
-        // Buscar el RFC en el campo serialNumber o directamente en el subject
-        Pattern pattern = Pattern.compile("OID\\.2\\.5\\.4\\.45=([A-Z0-9]{12,13})");
-        Matcher matcher = pattern.matcher(subject);
-        if (matcher.find()) {
-            return matcher.group(1); // Retorna el RFC
-        }
         return null;
     }
 }
