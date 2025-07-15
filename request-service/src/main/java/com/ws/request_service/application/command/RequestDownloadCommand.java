@@ -1,5 +1,7 @@
 package com.ws.request_service.application.command;
 
+import com.ws.model.VoucherType;
+import com.ws.validation.ValueOfEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -22,7 +24,9 @@ public class RequestDownloadCommand {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}$", message = "Fecha de fin del rango, con formato AAAA-MM-DDThh:mm:ss")
     private String fechaFinal;
     @NotBlank
-    private String tipoComprobante;
     @Pattern(regexp = "CFDI|Metadata", message = "Estado de comprobante inválido. Solo se permite CFDI o Metadata")
+    private String tipoSolicitud;
+    @ValueOfEnum(enumClass = VoucherType.class, message = "Tipo Comprobante incorrecto")
+    private String tipoComprobante;
     private String estadoComprobante;
 }
