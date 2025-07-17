@@ -27,15 +27,4 @@ public class FolioSatService {
         this.parser = parser;
     }
 
-    public String authenticate(X509Certificate cert, PrivateKey key) throws Exception {
-        String request = this.builder.build(cert, key);
-        log.info("**** request:\n{}", request);
-
-        String response = this.client.send(request, null);
-        log.info("**** response:\n{}", response);
-
-        return decodeValue(this.parser.extractToken(response));
-    }
-
-
 }
