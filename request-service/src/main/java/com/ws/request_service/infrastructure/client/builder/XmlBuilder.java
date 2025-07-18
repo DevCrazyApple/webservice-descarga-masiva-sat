@@ -2,6 +2,7 @@ package com.ws.request_service.infrastructure.client.builder;
 
 import com.ws.request_service.application.command.RequestDownloadCommand;
 import com.ws.request_service.domain.model.RequestModel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
@@ -14,36 +15,29 @@ import static com.ws.request_service.infrastructure.client.util.CryptoUtils.crea
 import static com.ws.request_service.infrastructure.client.util.CryptoUtils.sign;
 import static com.ws.request_service.infrastructure.client.util.XmlUtils.*;
 
+@Slf4j
 public class XmlBuilder {
 
     private String created;
     private String expires;
     private String uuid;
 
-    public String buildEmition(RequestModel requestDownloadCommand) throws Exception {
+    public String buildEmition(RequestModel requestModel) throws Exception {
 
         // create variables datetime
-        setTimeStamp();
+        String fechaInicial = requestModel.getFechaInicial();
+        String fechaFinal = requestModel.getFechaFinal();
+        String tipoComprobante = requestModel.getTipoComprobante();
+        String tipoSolicitud = requestModel.getTipoSolicitud();
+        String rfcReceptor = requestModel.getRfcReceptor();
 
-        String canonicalTimestamp = buildTimestamp(this.created, this.expires);
-        String digest = createDigest(canonicalTimestamp);
-        String canonicalSignedInfo = buildSignedInfo(digest);
-        String signature = sign(canonicalSignedInfo, privateKey);
-
-        return buildEnvelope(this.created, this.expires, this.uuid, digest, signature, certificate);
-    }
-
-    private void setTimeStamp() {
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-        simpleDateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Calendar calendarNow = Calendar.getInstance();
-
-        this.created = simpleDateFormat.format(calendarNow.getTime());
-        calendarNow.add(Calendar.SECOND, 5 * 60); // Add 300 seconds which equals 5 minutes
-
-        this.expires = simpleDateFormat.format(calendarNow.getTime());
-        this.uuid = "uuid-" + UUID.randomUUID() + "-1";
+        return null;
+//        String canonicalTimestamp = buildTimestamp(this.created, this.expires);
+//        String digest = createDigest(canonicalTimestamp);
+//        String canonicalSignedInfo = buildSignedInfo(digest);
+//        String signature = sign(canonicalSignedInfo, privateKey);
+//
+//        return buildEnvelope(this.created, this.expires, this.uuid, digest, signature, certificate);
     }
 
 }

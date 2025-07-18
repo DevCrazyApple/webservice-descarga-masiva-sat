@@ -18,17 +18,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmitionSatService implements TokenDownloadIn, EmitionDownloadIn {
 
-    private final SoapClient client;
-    private final XmlBuilder builder;
-    private final ResponseParser parser;
     private final TokenDonwloadOut tokenDonwloadOut;
     private final EmitionDownloadOut emitionDownloadOut;
     private final CommandToModel mapper;
 
-    public EmitionSatService(@Qualifier(value = "soapClientEmition") SoapClient client, XmlBuilder builder, ResponseParser parser, TokenDonwloadOut tokenDonwloadOut, EmitionDownloadOut emitionDownloadOut, CommandToModel mapper) {
-        this.client = client;
-        this.builder = builder;
-        this.parser = parser;
+    public EmitionSatService(TokenDonwloadOut tokenDonwloadOut, EmitionDownloadOut emitionDownloadOut, CommandToModel mapper) {
         this.tokenDonwloadOut = tokenDonwloadOut;
         this.emitionDownloadOut = emitionDownloadOut;
         this.mapper = mapper;

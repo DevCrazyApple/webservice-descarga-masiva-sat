@@ -9,7 +9,7 @@ public class CommandToModel {
     public RequestModel toModel(RequestDownloadCommand command) {
         return new RequestModel(
             command.getRfcEmisor(),
-            command.getRfcReceptor(),
+            command.getRfcReceptor() != null ? command.getRfcReceptor() : "",
             command.getFechaInicial(),
             command.getFechaFinal(),
             command.getTipoSolicitud(),
