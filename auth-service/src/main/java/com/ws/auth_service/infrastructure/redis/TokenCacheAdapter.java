@@ -1,4 +1,4 @@
-package com.ws.auth_service.infrastructure.adapter.redis;
+package com.ws.auth_service.infrastructure.redis;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.ws.auth_service.infrastructure.config;
 
-import com.ws.auth_service.infrastructure.dto.ErrorResponse;
+import com.ws.auth_service.application.dto.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

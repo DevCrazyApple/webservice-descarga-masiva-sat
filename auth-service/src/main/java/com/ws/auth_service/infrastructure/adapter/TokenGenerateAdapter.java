@@ -3,7 +3,7 @@ package com.ws.auth_service.infrastructure.adapter;
 import com.ws.auth_service.domain.model.AuthModel;
 import com.ws.auth_service.domain.port.outbound.AuthAutenticateOut;
 import com.ws.auth_service.domain.port.outbound.TokenGeneratorOut;
-import com.ws.auth_service.infrastructure.adapter.redis.TokenCacheAdapter;
+import com.ws.auth_service.infrastructure.redis.TokenCacheAdapter;
 import com.ws.auth_service.infrastructure.client.SoapClient;
 import com.ws.auth_service.infrastructure.client.builder.XmlBuilder;
 import com.ws.auth_service.infrastructure.client.parser.ResponseParser;
@@ -23,7 +23,6 @@ import static com.ws.auth_service.infrastructure.client.util.CryptoUtils.*;
 @Component
 public class TokenGenerateAdapter implements TokenGeneratorOut, AuthAutenticateOut {
 
-//    private final AuthSatService authSatService;
     private final AuthRepository authRepository;
     private final TokenCacheAdapter tokenCacheAdapter;
     private final SoapClient client;
@@ -61,34 +60,6 @@ public class TokenGenerateAdapter implements TokenGeneratorOut, AuthAutenticateO
         return mapToAuthModel(record);
     }
 
-    private AuthModel mapToAuthModel(AuthEntity authEntity) {
-        return  new AuthModel(
-                authEntity.getId(),
-                authEntity.getToken(),
-                authEntity.getRfc(),
-                authEntity.getTimestamp()
-        );
-    }
-
-    @Override
-    public String getToken(String rfc) {
-
-//        // ✅ Consultar en Redis primero
-//        Optional<String> tokenOptional = tokenCacheAdapter.getToken(rfc);
-//        if (tokenOptional.isPresent()) {
-//            System.out.println("**** token desde Redis");
-//            return tokenOptional.get();
-//        }
-//        return tokenOptional.orElseThrow();
-
-        return this.tokenCacheAdapter.getToken(rfc)
-                .orElseThrow(() -> new IllegalStateException("Token no encontrado en Redis para RFC: " + rfc));
-
-
-//        AuthEntity record = this.authRepository.findByRfc(rfc);
-//        return record.getToken();
-    }
-
     @Override
     public String authenticate(X509Certificate cert, PrivateKey key) throws Exception {
         String request = this.builder.build(cert, key);
@@ -100,7 +71,15 @@ public class TokenGenerateAdapter implements TokenGeneratorOut, AuthAutenticateO
         return decodeValue(this.parser.extractToken(response));
     }
 
-    @Override
+    private AuthModel mapToAuthModel(AuthEntity authEntity) {
+        return  new AuthModel(
+            authEntity.getId(),
+            authEntity.getToken(),
+            authEntity.getRfc(),
+            authEntity.getTimestamp()
+        );
+    }
+
     public String extractRfc(X509Certificate certificate) {
         return this.parser.extractRfc(certificate);
     }

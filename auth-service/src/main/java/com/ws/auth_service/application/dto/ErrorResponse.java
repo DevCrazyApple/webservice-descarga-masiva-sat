@@ -1,4 +1,4 @@
-package com.ws.auth_service.infrastructure.dto;
+package com.ws.auth_service.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,15 +1,22 @@
 package com.ws.auth_service.application.service;
 
 import com.ws.auth_service.domain.model.AuthModel;
+import com.ws.auth_service.domain.port.inbound.AuthAutenticateIn;
 import com.ws.auth_service.domain.port.inbound.TokenGeneratorIn;
+import com.ws.auth_service.domain.port.outbound.AuthAutenticateOut;
 import com.ws.auth_service.domain.port.outbound.TokenGeneratorOut;
 
-public class AuthService implements TokenGeneratorIn {
+import java.security.PrivateKey;
+import java.security.cert.X509Certificate;
+
+public class AuthService implements TokenGeneratorIn, AuthAutenticateIn {
 
     private final TokenGeneratorOut tokenGeneratorOut;
+    private final AuthAutenticateOut authAutenticateOut;
 
-    public AuthService(TokenGeneratorOut tokenGeneratorOut) {
+    public AuthService(TokenGeneratorOut tokenGeneratorOut, AuthAutenticateOut authAutenticateOut) {
         this.tokenGeneratorOut = tokenGeneratorOut;
+        this.authAutenticateOut = authAutenticateOut;
     }
 
     @Override
@@ -18,7 +25,7 @@ public class AuthService implements TokenGeneratorIn {
     }
 
     @Override
-    public String getToken(String rfc) {
-        return this.tokenGeneratorOut.getToken(rfc);
+    public String authenticate(X509Certificate cert, PrivateKey key) throws Exception {
+        return this.authAutenticateOut.authenticate(cert, key);
     }
 }

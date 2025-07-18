@@ -2,12 +2,11 @@ package com.ws.auth_service.infrastructure.controller;
 
 import com.ws.auth_service.domain.model.AuthModel;
 import com.ws.auth_service.domain.port.outbound.TokenGeneratorOut;
-import com.ws.auth_service.infrastructure.dto.AuthTokenResponse;
-import com.ws.auth_service.infrastructure.dto.ErrorResponse;
-import com.ws.auth_service.infrastructure.dto.GetTokenRequest;
-import com.ws.auth_service.infrastructure.dto.TokenGenerateRequest;
+import com.ws.auth_service.application.dto.AuthTokenResponse;
+import com.ws.auth_service.application.dto.ErrorResponse;
+import com.ws.auth_service.application.dto.GetTokenRequest;
+import com.ws.auth_service.application.command.TokenGenerateRequest;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -51,20 +50,5 @@ public class AuthController {
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
-    }
-
-    @GetMapping
-    public ResponseEntity<?> getToken(@Valid @RequestBody GetTokenRequest getTokenRequest) {
-        String record = this.tokenGeneratorOut.getToken(getTokenRequest.getRfc());
-
-        return ResponseEntity.ok(
-            Map.of(
-                "message", "Activo",
-                "status", "success",
-                "token", record,
-                "timeStamp", System.currentTimeMillis()
-            )
-        );
-
     }
 }

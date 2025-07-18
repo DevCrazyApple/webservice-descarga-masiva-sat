@@ -1,4 +1,4 @@
-package com.ws.auth_service.infrastructure.dto;
+package com.ws.auth_service.application.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;

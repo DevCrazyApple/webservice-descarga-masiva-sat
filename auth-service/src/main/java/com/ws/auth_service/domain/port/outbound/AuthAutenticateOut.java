@@ -5,5 +5,4 @@ import java.security.cert.X509Certificate;
 
 public interface AuthAutenticateOut {
     String authenticate(X509Certificate cert, PrivateKey key) throws Exception;
-    String extractRfc(X509Certificate certificate);
 }
