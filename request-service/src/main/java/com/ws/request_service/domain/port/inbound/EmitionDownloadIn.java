@@ -4,5 +4,6 @@ import com.ws.request_service.application.command.RequestDownloadCommand;
 import com.ws.request_service.domain.model.RequestModel;
 
 public interface EmitionDownloadIn {
-    RequestModel requestDownload(RequestDownloadCommand requestDownloadCommand);
+    RequestModel requestDownload(RequestModel requestModel) throws Exception;
+    RequestModel toModel(RequestDownloadCommand requestDownloadCommand);
 }

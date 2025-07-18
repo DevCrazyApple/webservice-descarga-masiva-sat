@@ -5,18 +5,18 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
 public class RequestModel {
-    private String id;
-    private String requestId;
     private String rfcEmisor;
     private String rfcReceptor;
-    private String requestType;
-    private String initDate;
-    private String finishDate;
+    private String fechaInicial;
+    private String fechaFinal;
+    private String tipoSolicitud;
+    private String tipoComprobante;
+    private String estadoComprobante;
+    private String token;
 }

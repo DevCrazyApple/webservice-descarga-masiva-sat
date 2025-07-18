@@ -1,6 +1,7 @@
 package com.ws.request_service.application.service;
 
 import com.ws.request_service.application.command.RequestDownloadCommand;
+import com.ws.request_service.application.mapper.CommandToModel;
 import com.ws.request_service.domain.model.RequestModel;
 import com.ws.request_service.domain.port.inbound.EmitionDownloadIn;
 import com.ws.request_service.domain.port.inbound.TokenDownloadIn;
@@ -22,19 +23,26 @@ public class EmitionSatService implements TokenDownloadIn, EmitionDownloadIn {
     private final ResponseParser parser;
     private final TokenDonwloadOut tokenDonwloadOut;
     private final EmitionDownloadOut emitionDownloadOut;
+    private final CommandToModel mapper;
 
-    public EmitionSatService(@Qualifier(value = "soapClientEmition") SoapClient client, XmlBuilder builder, ResponseParser parser, TokenDonwloadOut tokenDonwloadOut, EmitionDownloadOut emitionDownloadOut) {
+    public EmitionSatService(@Qualifier(value = "soapClientEmition") SoapClient client, XmlBuilder builder, ResponseParser parser, TokenDonwloadOut tokenDonwloadOut, EmitionDownloadOut emitionDownloadOut, CommandToModel mapper) {
         this.client = client;
         this.builder = builder;
         this.parser = parser;
         this.tokenDonwloadOut = tokenDonwloadOut;
         this.emitionDownloadOut = emitionDownloadOut;
+        this.mapper = mapper;
     }
 
 
     @Override
-    public RequestModel requestDownload(RequestDownloadCommand requestDownloadCommand) {
-        return this.emitionDownloadOut.requestDownload(requestDownloadCommand);
+    public RequestModel requestDownload(RequestModel requestModel) throws Exception {
+        return this.emitionDownloadOut.requestDownload(requestModel);
+    }
+
+    @Override
+    public RequestModel toModel(RequestDownloadCommand requestDownloadCommand) {
+        return this.mapper.toModel(requestDownloadCommand);
     }
 
     @Override

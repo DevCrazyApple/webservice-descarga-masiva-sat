@@ -1,5 +1,8 @@
 package com.ws.request_service.infrastructure.client.builder;
 
+import com.ws.request_service.application.command.RequestDownloadCommand;
+import com.ws.request_service.domain.model.RequestModel;
+
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.text.SimpleDateFormat;
@@ -17,7 +20,7 @@ public class XmlBuilder {
     private String expires;
     private String uuid;
 
-    public String build(X509Certificate certificate, PrivateKey privateKey) throws Exception {
+    public String buildEmition(RequestModel requestDownloadCommand) throws Exception {
 
         // create variables datetime
         setTimeStamp();

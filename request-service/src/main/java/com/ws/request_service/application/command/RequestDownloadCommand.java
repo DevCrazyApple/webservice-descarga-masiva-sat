@@ -5,12 +5,14 @@ import com.ws.validation.ValueOfEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
+@Builder
 public class RequestDownloadCommand {
     @NotBlank(message = "Rfc Emisor es requerido")
     @Pattern(regexp = "^[A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3}$", message = "RFC emisor inválido")
@@ -38,4 +40,6 @@ public class RequestDownloadCommand {
     @NotBlank(message = "Estado de Comprobante es requerido")
     @Pattern(regexp = "Cancelado|Vigente", message = "Solo se permite Cancelado o Vigente")
     private String estadoComprobante;
+
+    private String token;
 }
