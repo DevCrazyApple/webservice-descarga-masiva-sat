@@ -1,5 +1,5 @@
 package com.ws.request_service.domain.port.outbound;
 
-public interface TokenDonwloadOut {
+public interface TokenRequestOut {
     String getToken(String rfc);
 }

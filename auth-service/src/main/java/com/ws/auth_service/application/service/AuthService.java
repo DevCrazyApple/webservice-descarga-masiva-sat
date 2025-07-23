@@ -1,6 +1,7 @@
 package com.ws.auth_service.application.service;
 
 import com.ws.auth_service.domain.model.AuthModel;
+import com.ws.auth_service.domain.model.PfxModel;
 import com.ws.auth_service.domain.port.inbound.AuthAutenticateIn;
 import com.ws.auth_service.domain.port.inbound.TokenGeneratorIn;
 import com.ws.auth_service.domain.port.outbound.AuthAutenticateOut;
@@ -22,6 +23,11 @@ public class AuthService implements TokenGeneratorIn, AuthAutenticateIn {
     @Override
     public AuthModel generateToken(String certificate, String privateKey) throws Exception {
         return this.tokenGeneratorOut.generateToken(certificate, privateKey);
+    }
+
+    @Override
+    public PfxModel getPfx(String rfc) {
+        return this.tokenGeneratorOut.getPfx(rfc);
     }
 
     @Override

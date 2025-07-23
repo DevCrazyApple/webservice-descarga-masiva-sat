@@ -1,12 +1,14 @@
 package com.ws.auth_service.infrastructure.controller;
 
 import com.ws.auth_service.domain.model.AuthModel;
+import com.ws.auth_service.domain.model.PfxModel;
 import com.ws.auth_service.domain.port.outbound.TokenGeneratorOut;
 import com.ws.auth_service.application.dto.AuthTokenResponse;
 import com.ws.auth_service.application.dto.ErrorResponse;
-import com.ws.auth_service.application.dto.GetTokenRequest;
 import com.ws.auth_service.application.command.TokenGenerateRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping(value = "/api/auth")
 @Validated
@@ -50,5 +53,17 @@ public class AuthController {
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
+    }
+
+    @GetMapping(value = "/pfx/{rfc}")
+    public ResponseEntity<?> getPfx(@PathVariable @NotBlank String rfc) {
+
+        PfxModel exists = this.tokenGeneratorOut.getPfx(rfc);
+        return ResponseEntity.ok(
+            Map.of(
+                "cert", exists.getCert(),
+                "key", exists.getKey()
+            )
+        );
     }
 }

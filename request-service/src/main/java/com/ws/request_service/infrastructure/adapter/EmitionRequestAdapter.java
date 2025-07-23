@@ -1,8 +1,8 @@
 package com.ws.request_service.infrastructure.adapter;
 
 import com.ws.request_service.domain.model.RequestModel;
-import com.ws.request_service.domain.port.outbound.EmitionDownloadOut;
-import com.ws.request_service.domain.port.outbound.TokenDonwloadOut;
+import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
+import com.ws.request_service.domain.port.outbound.TokenRequestOut;
 import com.ws.request_service.infrastructure.client.SoapClient;
 import com.ws.request_service.infrastructure.client.SoapClientProvider;
 import com.ws.request_service.infrastructure.client.builder.XmlBuilder;
@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class EmitionDownloadAdapter implements EmitionDownloadOut, TokenDonwloadOut {
+public class EmitionRequestAdapter implements EmitionRequestOut, TokenRequestOut {
 
     private final TokenCacheAdapter tokenCacheAdapter;
     private final XmlBuilder builder;
     private final ResponseParser parser;
     private final SoapClient client;
 
-    public EmitionDownloadAdapter(TokenCacheAdapter tokenCacheAdapter, XmlBuilder builder, ResponseParser parser, SoapClientProvider provider) {
+    public EmitionRequestAdapter(TokenCacheAdapter tokenCacheAdapter, XmlBuilder builder, ResponseParser parser, SoapClientProvider provider) {
         this.tokenCacheAdapter = tokenCacheAdapter;
         this.builder = builder;
         this.parser = parser;
