@@ -2,36 +2,35 @@ package com.ws.request_service.application.service;
 
 import com.ws.request_service.application.command.RequestDownloadCommand;
 import com.ws.request_service.application.mapper.CommandToModel;
+import com.ws.request_service.domain.model.PfxModel;
 import com.ws.request_service.domain.model.RequestModel;
-import com.ws.request_service.domain.port.inbound.EmitionDownloadIn;
-import com.ws.request_service.domain.port.inbound.TokenDownloadIn;
-import com.ws.request_service.domain.port.outbound.EmitionDownloadOut;
-import com.ws.request_service.domain.port.outbound.TokenDonwloadOut;
-import com.ws.request_service.infrastructure.client.SoapClient;
-import com.ws.request_service.infrastructure.client.builder.XmlBuilder;
-import com.ws.request_service.infrastructure.client.parser.ResponseParser;
+import com.ws.request_service.domain.port.inbound.EmitionRequestIn;
+import com.ws.request_service.domain.port.inbound.TokenRequestIn;
+import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
+import com.ws.request_service.domain.port.outbound.TokenRequestOut;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 @Slf4j
 @Service
-public class EmitionSatService implements TokenDownloadIn, EmitionDownloadIn {
+public class EmitionSatService implements TokenRequestIn, EmitionRequestIn {
 
-    private final TokenDonwloadOut tokenDonwloadOut;
-    private final EmitionDownloadOut emitionDownloadOut;
+    private final TokenRequestOut tokenRequestOut;
+    private final EmitionRequestOut emitionRequestOut;
     private final CommandToModel mapper;
 
-    public EmitionSatService(TokenDonwloadOut tokenDonwloadOut, EmitionDownloadOut emitionDownloadOut, CommandToModel mapper) {
-        this.tokenDonwloadOut = tokenDonwloadOut;
-        this.emitionDownloadOut = emitionDownloadOut;
+    public EmitionSatService(TokenRequestOut tokenRequestOut, EmitionRequestOut emitionRequestOut, CommandToModel mapper) {
+        this.tokenRequestOut = tokenRequestOut;
+        this.emitionRequestOut = emitionRequestOut;
         this.mapper = mapper;
     }
 
 
     @Override
     public RequestModel requestDownload(RequestModel requestModel) throws Exception {
-        return this.emitionDownloadOut.requestDownload(requestModel);
+        return this.emitionRequestOut.requestDownload(requestModel);
     }
 
     @Override
@@ -41,6 +40,11 @@ public class EmitionSatService implements TokenDownloadIn, EmitionDownloadIn {
 
     @Override
     public String getToken(String rfc) {
-        return this.tokenDonwloadOut.getToken(rfc);
+        return this.tokenRequestOut.getToken(rfc);
+    }
+
+    @Override
+    public PfxModel getPfx(String rfc) {
+        return this.tokenRequestOut.getPfx(rfc);
     }
 }

@@ -15,7 +15,7 @@ public class ResponseParser {
      * @param response
      * @return
      */
-    public String getResult(String response) {
+    public String emitionGetResult(String response) {
         Document doc = convertStringToXMLDocument(response);
 
         //Verify XML document is build correctly
