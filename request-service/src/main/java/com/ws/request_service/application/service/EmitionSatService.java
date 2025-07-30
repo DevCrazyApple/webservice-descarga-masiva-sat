@@ -29,7 +29,7 @@ public class EmitionSatService implements TokenRequestIn, EmitionRequestIn {
 
 
     @Override
-    public RequestModel requestDownload(RequestModel requestModel) throws Exception {
+    public String requestDownload(RequestModel requestModel) throws Exception {
         return this.emitionRequestOut.requestDownload(requestModel);
     }
 

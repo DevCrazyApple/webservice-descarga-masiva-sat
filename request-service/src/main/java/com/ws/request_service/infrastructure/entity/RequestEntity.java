@@ -13,6 +13,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class RequestEntity {
     @Id
     private String id;
-    private String rfc;
-    private String idrequest;
+    private String rfcEmisor;
+    private String rfcReceptor;
+    private String fechaInicial;
+    private String fechaFinal;
+    private String tipoSolicitud;
+    private String tipoComprobante;
+    private String estadoComprobante;
+    private String idRequest;
 }

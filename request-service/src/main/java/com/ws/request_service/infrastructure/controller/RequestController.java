@@ -1,6 +1,7 @@
 package com.ws.request_service.infrastructure.controller;
 
 import com.ws.request_service.application.command.RequestDownloadCommand;
+import com.ws.request_service.application.dto.ErrorResponse;
 import com.ws.request_service.domain.model.PfxModel;
 import com.ws.request_service.domain.model.RequestModel;
 import com.ws.request_service.domain.port.inbound.EmitionRequestIn;
@@ -8,6 +9,7 @@ import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
 import com.ws.request_service.domain.port.outbound.TokenRequestOut;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -61,19 +63,26 @@ public class RequestController {
         X509Certificate certificate = generateCertificateFromDER(certBytes);
         mapmodel.setCertificate(certificate);
 
+        String idrequest = this.emitionRequestOut.requestDownload(mapmodel);
 
-        var idrequest = this.emitionRequestOut.requestDownload(mapmodel);
-
+        if ( idrequest.isEmpty() ) {
+            var error = new ErrorResponse(
+                    HttpStatus.NOT_FOUND.value(),
+                    "Request Not Found",
+                    String.format("No request found with rfc %s", mapmodel.getRfcEmisor()),
+                    null
+            );
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+        }
 
         return ResponseEntity.ok(
             Map.of(
-                "message", "Activo",
+                "message", "Se obtuvo el id de la solicitud con éxito",
                 "status", "success",
-                "idrequest", "113123131313",
+                "idrequest", idrequest,
+                "rfc", mapmodel.getRfcEmisor(),
                 "timeStamp", System.currentTimeMillis()
             )
         );
-
-
     }
 }
