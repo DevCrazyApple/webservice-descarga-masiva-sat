@@ -42,6 +42,11 @@ public class XmlUtils {
         return null;
     }
 
+    /**
+     * create emition build timestamp
+     * @param requestModel
+     * @return
+     */
     public static String emitionBuildTimestamp(RequestModel requestModel) {
         var canonicalTimestamp = new StringBuilder();
         canonicalTimestamp.append("<des:SolicitaDescargaEmitidos xmlns:des=\"http://DescargaMasivaTerceros.sat.gob.mx\">")
@@ -58,6 +63,26 @@ public class XmlUtils {
             .append("</des:RfcReceptor></des:RfcReceptores>")
             .append("</des:SolicitaDescargaEmitidos>");
 
+        return canonicalTimestamp.toString();
+    }
+
+    /**
+     * create reception build timestamp
+     * @param requestModel
+     * @return
+     */
+    public static String receptionBuildTimestamp(RequestModel requestModel) {
+        var canonicalTimestamp = new StringBuilder();
+        canonicalTimestamp.append("<des:SolicitaDescargaRecibidos xmlns:des=\"http://DescargaMasivaTerceros.sat.gob.mx\">")
+            .append("<des:solicitud RfcReceptor=\"").append(requestModel.getRfcEmisor())
+            .append("\" EstadoComprobante=\"").append(requestModel.getEstadoComprobante())
+            .append("\" FechaInicial=\"").append(requestModel.getFechaInicial())
+            .append("\" FechaFinal=\"").append(requestModel.getFechaFinal())
+            .append("\" TipoComprobante=\"").append(requestModel.getTipoComprobante())
+            .append("\" TipoSolicitud=\"").append(requestModel.getTipoSolicitud())
+            .append("\">")
+            .append("</des:solicitud>")
+            .append("</des:SolicitaDescargaEmitidos>");
         return canonicalTimestamp.toString();
     }
 
@@ -127,6 +152,56 @@ public class XmlUtils {
              .append("</des:SolicitaDescargaEmitidos>")
              .append("</s:Body>")
              .append("</s:Envelope>");
+
+        return request_xml.toString();
+    }
+
+    public static String receptionBuildEnvelope(String digest, String signature, RequestModel requestModel) throws CertificateEncodingException {
+        var request_xml = new StringBuilder();
+        request_xml.append("<s:Envelope xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:u=\"http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd\" xmlns:des=\"http://DescargaMasivaTerceros.sat.gob.mx\" xmlns:xd=\"http://www.w3.org/2000/09/xmldsig#\">")
+            .append("<s:Header/>")
+            .append("<s:Body>")
+            .append("<des:SolicitaDescargaRecibidos>")
+            .append("<des:solicitud RfcReceptor=\"").append(requestModel.getRfcEmisor())
+            .append("\" EstadoComprobante=\"").append(requestModel.getEstadoComprobante())
+            .append("\" FechaInicial=\"").append(requestModel.getFechaInicial())
+            .append("\" FechaFinal=\"").append(requestModel.getFechaFinal())
+            .append("\" TipoComprobante=\"").append(requestModel.getTipoComprobante())
+            .append("\" TipoSolicitud=\"").append(requestModel.getTipoSolicitud())
+            .append("\">")
+            .append("<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">")
+            .append("<SignedInfo>")
+            .append("<CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>")
+            .append("<SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/>")
+            .append("<Reference URI=\"#_0\">")
+            .append("<Transforms>")
+            .append("<Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/>")
+            .append("</Transforms>")
+            .append("<DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/>")
+            .append("<DigestValue>").append(digest).append("</DigestValue>")
+            .append("</Reference>")
+            .append("</SignedInfo>")
+            .append("<SignatureValue>").append(signature).append("</SignatureValue>")
+            .append("<KeyInfo>")
+            .append("<X509Data>")
+            .append("<X509IssuerSerial>")
+            .append("<X509IssuerName>")
+            .append(requestModel.getCertificate().getIssuerX500Principal())
+            .append("</X509IssuerName>")
+            .append("<X509SerialNumber>")
+            .append(requestModel.getCertificate().getSerialNumber())
+            .append("</X509SerialNumber>")
+            .append("</X509IssuerSerial>")
+            .append("<X509Certificate>")
+            .append(Base64.getEncoder().encodeToString(requestModel.getCertificate().getEncoded()))
+            .append("</X509Certificate>")
+            .append("</X509Data>")
+            .append("</KeyInfo>")
+            .append("</Signature>")
+            .append("</des:solicitud>")
+            .append("</des:SolicitaDescargaRecibidos>")
+            .append("</s:Body>")
+            .append("</s:Envelope>");
 
         return request_xml.toString();
     }

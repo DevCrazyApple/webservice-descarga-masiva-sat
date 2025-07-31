@@ -17,7 +17,23 @@ public class MapToEntity {
             model.getTipoSolicitud(),
             model.getTipoComprobante(),
             model.getEstadoComprobante(),
-            null
+            null,
+            "EmitionSatService"
+        );
+    }
+
+    public RequestEntity toEntityReception(RequestModel model) {
+        return new RequestEntity(
+            null,
+            model.getRfcEmisor(),
+            model.getRfcReceptor(),
+            model.getFechaInicial(),
+            model.getFechaFinal(),
+            model.getTipoSolicitud(),
+            model.getTipoComprobante(),
+            model.getEstadoComprobante(),
+            null,
+            "ReceptionSatService"
         );
     }
 }

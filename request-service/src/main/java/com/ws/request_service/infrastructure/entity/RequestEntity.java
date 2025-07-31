@@ -21,4 +21,5 @@ public class RequestEntity {
     private String tipoComprobante;
     private String estadoComprobante;
     private String idRequest;
+    private String tipoServicio;
 }

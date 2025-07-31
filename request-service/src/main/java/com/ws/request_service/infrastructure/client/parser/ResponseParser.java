@@ -27,4 +27,22 @@ public class ResponseParser {
 
         return null;
     }
+
+    /**
+     * Get token of a previously obtained XML
+     * @param response
+     * @return
+     */
+    public String receptionGetResult(String response) {
+        Document doc = convertStringToXMLDocument(response);
+
+        //Verify XML document is build correctly
+        if (doc != null)
+            return doc.getElementsByTagName("SolicitaDescargaRecibidosResult")
+                    .item(0)
+                    .getAttributes()
+                    .getNamedItem("IdSolicitud").getTextContent();
+
+        return null;
+    }
 }

@@ -1,9 +1,7 @@
 package com.ws.request_service.infrastructure.adapter;
 
-import com.ws.request_service.domain.model.PfxModel;
 import com.ws.request_service.domain.model.RequestModel;
-import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
-import com.ws.request_service.domain.port.outbound.TokenRequestOut;
+import com.ws.request_service.domain.port.outbound.ReceptionRequestOut;
 import com.ws.request_service.infrastructure.client.SoapClient;
 import com.ws.request_service.infrastructure.client.SoapClientProvider;
 import com.ws.request_service.infrastructure.client.builder.XmlBuilder;
@@ -18,7 +16,7 @@ import static com.ws.request_service.infrastructure.client.util.CryptoUtils.deco
 
 @Slf4j
 @Component
-public class EmitionRequestAdapter implements EmitionRequestOut {
+public class ReceptionRequestAdapter implements ReceptionRequestOut {
 
     private final XmlBuilder builder;
     private final ResponseParser parser;
@@ -26,28 +24,27 @@ public class EmitionRequestAdapter implements EmitionRequestOut {
     private final MapToEntity mapper;
     private final RequestRepo requestRepo;
 
-    public EmitionRequestAdapter(XmlBuilder builder, ResponseParser parser, SoapClientProvider provider, MapToEntity mapper, RequestRepo requestRepo) {
+    public ReceptionRequestAdapter(XmlBuilder builder, ResponseParser parser, SoapClientProvider provider, MapToEntity mapper, RequestRepo requestRepo) {
         this.builder = builder;
         this.parser = parser;
-        this.client = provider.forEmition();
+        this.client = provider.forReception();
         this.mapper = mapper;
         this.requestRepo = requestRepo;
     }
 
     @Override
     public String requestDownload(RequestModel requestModel) throws Exception {
-
-        String request = this.builder.buildEmition(requestModel);
+        String request = this.builder.buildReception(requestModel);
         log.info("**** request:\n{}", request);
 
         String response = this.client.send(request, requestModel.getToken());
         log.info("**** response:\n{}", response);
 
         // mapeamos la info a una entidad
-        RequestEntity entity = this.mapper.toEntityEmition(requestModel);
+        RequestEntity entity = this.mapper.toEntityReception(requestModel);
 
         // obtenemos el id de la petición
-        String idrequest = decodeValue(this.parser.emitionGetResult(response));
+        String idrequest = decodeValue(this.parser.receptionGetResult(response));
 
         entity.setIdRequest(idrequest);
 
@@ -56,4 +53,5 @@ public class EmitionRequestAdapter implements EmitionRequestOut {
 
         return idrequest;
     }
+
 }

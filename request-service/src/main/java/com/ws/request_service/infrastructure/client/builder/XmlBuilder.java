@@ -20,4 +20,12 @@ public class XmlBuilder {
         return emitionBuildEnvelope(digest, signature, requestModel);
     }
 
+    public String buildReception(RequestModel requestModel) throws Exception {
+        String canonicalTimestamp = receptionBuildTimestamp(requestModel);
+        String digest = createDigest(canonicalTimestamp);
+        String canonicalSignedInfo = buildSignedInfo(digest);
+        String signature = sign(canonicalSignedInfo, requestModel.getPrivateKey());
+        return receptionBuildEnvelope(digest, signature, requestModel);
+    }
+
 }
