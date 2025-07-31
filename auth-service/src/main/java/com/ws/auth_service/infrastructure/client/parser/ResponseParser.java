@@ -1,5 +1,6 @@
 package com.ws.auth_service.infrastructure.client.parser;
 
+import lombok.extern.slf4j.Slf4j;
 import org.w3c.dom.Document;
 
 import java.security.cert.X509Certificate;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 
 import static com.ws.auth_service.infrastructure.client.util.XmlUtils.convertStringToXMLDocument;
 
+@Slf4j
 public class ResponseParser {
 
     /**
@@ -32,7 +34,7 @@ public class ResponseParser {
      */
     public String extractRfc(X509Certificate certificate) {
         String subject = certificate.getSubjectX500Principal().toString();
-        System.out.println("Subject: " + subject);
+        log.info("**** subject {}", subject);
 
         // Buscar el RFC en el campo serialNumber o directamente en el subject
         Pattern pattern = Pattern.compile("OID\\.2\\.5\\.4\\.45=([A-Z0-9]{12,13})");

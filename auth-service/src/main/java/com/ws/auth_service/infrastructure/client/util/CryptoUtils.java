@@ -1,5 +1,7 @@
 package com.ws.auth_service.infrastructure.client.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.ByteArrayInputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -12,6 +14,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 
+@Slf4j
 public class CryptoUtils {
 
     /**
@@ -19,8 +22,14 @@ public class CryptoUtils {
      * @param pem
      * @return
      */
-    public static byte[] parseDERFromPEM(String pem) {
-        return Base64.getDecoder().decode(pem);
+    public static byte[] parseDERFromPEM(String pem, String beginDelimiter, String endDelimiter) {
+        try {
+            String[] tokens = pem.split(beginDelimiter);
+            tokens = tokens[1].split(endDelimiter);
+            return Base64.getDecoder().decode(tokens[0]);
+        } catch (Exception e) {
+            return Base64.getDecoder().decode(pem);
+        }
     }
 
     /**

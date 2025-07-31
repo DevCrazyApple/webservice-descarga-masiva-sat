@@ -2,7 +2,7 @@ package com.ws.auth_service.infrastructure.adapter;
 
 import com.ws.auth_service.domain.model.AuthModel;
 import com.ws.auth_service.domain.model.PfxModel;
-import com.ws.auth_service.domain.port.outbound.AuthAutenticateOut;
+import com.ws.auth_service.domain.port.outbound.AutenticateOut;
 import com.ws.auth_service.domain.port.outbound.TokenGeneratorOut;
 import com.ws.auth_service.infrastructure.entities.PfxEntity;
 import com.ws.auth_service.infrastructure.redis.TokenCacheAdapter;
@@ -25,7 +25,7 @@ import static com.ws.auth_service.infrastructure.client.util.CryptoUtils.*;
 
 @Slf4j
 @Component
-public class TokenGenerateAdapter implements TokenGeneratorOut, AuthAutenticateOut {
+public class AuthAdapter implements TokenGeneratorOut, AutenticateOut {
 
     private final AuthRepo authRepository;
     private final PfxRepo pfxRepo;
@@ -34,7 +34,7 @@ public class TokenGenerateAdapter implements TokenGeneratorOut, AuthAutenticateO
     private final XmlBuilder builder;
     private final ResponseParser parser;
 
-    public TokenGenerateAdapter(AuthRepo authRepository, PfxRepo pfxRepo, TokenCacheAdapter tokenCacheAdapter, SoapClient client, XmlBuilder builder, ResponseParser parser) {
+    public AuthAdapter(AuthRepo authRepository, PfxRepo pfxRepo, TokenCacheAdapter tokenCacheAdapter, SoapClient client, XmlBuilder builder, ResponseParser parser) {
         this.authRepository = authRepository;
         this.pfxRepo = pfxRepo;
         this.tokenCacheAdapter = tokenCacheAdapter;
@@ -46,8 +46,10 @@ public class TokenGenerateAdapter implements TokenGeneratorOut, AuthAutenticateO
     @Override
     public AuthModel generateToken(String certificate, String privateKey) throws Exception {
 
-        X509Certificate cert = generateCertificateFromDER(parseDERFromPEM(certificate));
-        RSAPrivateKey key = generatePrivateKeyFromDER(parseDERFromPEM(privateKey));
+        log.info("**** generate token");
+
+        X509Certificate cert = generateCertificateFromDER(parseDERFromPEM(certificate, "-----BEGIN CERTIFICATE-----", "-----END CERTIFICATE-----"));
+        RSAPrivateKey key = generatePrivateKeyFromDER(parseDERFromPEM(privateKey, "-----BEGIN PRIVATE KEY-----", "-----END PRIVATE KEY-----"));
 
         String rfc = this.extractRfc(cert);
         log.info("**** rfc entry {}", rfc);
