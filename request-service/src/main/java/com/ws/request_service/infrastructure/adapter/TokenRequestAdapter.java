@@ -22,7 +22,7 @@ public class TokenRequestAdapter implements TokenRequestOut {
     @Override
     public String getToken(String rfc) {
         return this.tokenCacheAdapter.getToken(rfc)
-                .orElseThrow(() -> new IllegalStateException("Token no encontrado en Redis para RFC: " + rfc));
+            .orElseThrow(() -> new IllegalStateException("Token no encontrado en Redis para RFC: " + rfc));
     }
 
     @Override

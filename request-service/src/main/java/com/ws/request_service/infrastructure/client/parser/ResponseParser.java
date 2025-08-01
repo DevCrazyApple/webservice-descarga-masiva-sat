@@ -2,9 +2,6 @@ package com.ws.request_service.infrastructure.client.parser;
 
 import org.w3c.dom.Document;
 
-import java.security.cert.X509Certificate;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.ws.request_service.infrastructure.client.util.XmlUtils.convertStringToXMLDocument;
 
