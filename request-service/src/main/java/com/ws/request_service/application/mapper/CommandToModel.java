@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class CommandToModel {
     public RequestModel toModel(RequestDownloadCommand command) {
         return new RequestModel(
-            command.getRfcEmisor(),
+            command.getRfcSolicitante(),
             command.getRfcReceptor() != null ? command.getRfcReceptor() : "",
             command.getFechaInicial(),
             command.getFechaFinal(),

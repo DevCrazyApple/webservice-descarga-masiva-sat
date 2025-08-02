@@ -9,8 +9,10 @@ import com.ws.request_service.domain.port.inbound.ReceptionRequestIn;
 import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
 import com.ws.request_service.domain.port.outbound.ReceptionRequestOut;
 import com.ws.request_service.domain.port.outbound.TokenRequestOut;
+import com.ws.request_service.infrastructure.entity.RequestEntity;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Request;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -49,11 +51,12 @@ public class RequestController {
         this.tokenRequestOut = tokenRequestOut;
     }
 
+
     @PostMapping(value = "/emition")
     public ResponseEntity<?> emitionGenerateRequest(@Valid @RequestBody RequestDownloadCommand requestDownloadCommand) throws Exception {
 
         // con el token obtenido en redis lo agregamos con el request para complementar la info
-        String token = this.tokenRequestOut.getToken(requestDownloadCommand.getRfcEmisor());
+        String token = this.tokenRequestOut.getToken(requestDownloadCommand.getRfcSolicitante());
         requestDownloadCommand.setToken(token);
         log.info("**** token: {}", token);
 
@@ -61,7 +64,7 @@ public class RequestController {
         RequestModel mapmodel = this.emitionRequestIn.toModel(requestDownloadCommand);
 
         // obtenemos el pfx haciendo una llamada al microservicio de auth
-        PfxModel outPfx = this.tokenRequestOut.getPfx(mapmodel.getRfcEmisor());
+        PfxModel outPfx = this.tokenRequestOut.getPfx(mapmodel.getRfcSolicitante());
 
         byte[] keyBytes = Base64.getDecoder().decode(outPfx.getKey());
         RSAPrivateKey privateKey = generatePrivateKeyFromDER(keyBytes);
@@ -77,7 +80,7 @@ public class RequestController {
             var error = new ErrorResponse(
                     HttpStatus.NOT_FOUND.value(),
                     "Request Not Found",
-                    String.format("No request found with rfc %s", mapmodel.getRfcEmisor()),
+                    String.format("No request found with rfc %s", mapmodel.getRfcSolicitante()),
                     null
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
@@ -88,7 +91,7 @@ public class RequestController {
                 "message", "Se obtuvo el id de la solicitud con éxito",
                 "status", "success",
                 "idrequest", idrequest,
-                "rfc", mapmodel.getRfcEmisor(),
+                "rfc", mapmodel.getRfcSolicitante(),
                 "timeStamp", System.currentTimeMillis()
             )
         );
@@ -98,7 +101,7 @@ public class RequestController {
     public ResponseEntity<?> receptionGenerateRequest(@Valid @RequestBody RequestDownloadCommand requestDownloadCommand) throws Exception {
 
         // con el token obtenido en redis lo agregamos con el request para complementar la info
-        String token = this.tokenRequestOut.getToken(requestDownloadCommand.getRfcEmisor());
+        String token = this.tokenRequestOut.getToken(requestDownloadCommand.getRfcSolicitante());
         requestDownloadCommand.setToken(token);
         log.info("**** token: {}", token);
 
@@ -106,7 +109,7 @@ public class RequestController {
         RequestModel mapmodel = this.receptionRequestIn.toModel(requestDownloadCommand);
 
         // obtenemos el pfx haciendo una llamada al microservicio de auth
-        PfxModel outPfx = this.tokenRequestOut.getPfx(mapmodel.getRfcEmisor());
+        PfxModel outPfx = this.tokenRequestOut.getPfx(mapmodel.getRfcSolicitante());
 
         byte[] keyBytes = Base64.getDecoder().decode(outPfx.getKey());
         RSAPrivateKey privateKey = generatePrivateKeyFromDER(keyBytes);
@@ -122,7 +125,7 @@ public class RequestController {
             var error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "Request Not Found",
-                String.format("No request found with rfc %s", mapmodel.getRfcEmisor()),
+                String.format("No request found with rfc %s", mapmodel.getRfcSolicitante()),
                 null
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
@@ -133,7 +136,7 @@ public class RequestController {
                 "message", "Se obtuvo el id de la solicitud con éxito",
                 "status", "success",
                 "idrequest", idrequest,
-                "rfc", mapmodel.getRfcEmisor(),
+                "rfc", mapmodel.getRfcSolicitante(),
                 "timeStamp", System.currentTimeMillis()
             )
         );

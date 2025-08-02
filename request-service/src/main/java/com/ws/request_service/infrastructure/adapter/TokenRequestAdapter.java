@@ -1,5 +1,6 @@
 package com.ws.request_service.infrastructure.adapter;
 
+import com.ws.request_service.domain.exception.TokenNotFoundException;
 import com.ws.request_service.domain.model.PfxModel;
 import com.ws.request_service.domain.port.outbound.TokenRequestOut;
 import com.ws.request_service.infrastructure.redis.TokenCacheAdapter;
@@ -22,7 +23,7 @@ public class TokenRequestAdapter implements TokenRequestOut {
     @Override
     public String getToken(String rfc) {
         return this.tokenCacheAdapter.getToken(rfc)
-            .orElseThrow(() -> new IllegalStateException("Token no encontrado en Redis para RFC: " + rfc));
+            .orElseThrow(() -> new TokenNotFoundException(rfc));
     }
 
     @Override

@@ -1,7 +1,9 @@
 package com.ws.request_service.infrastructure.config;
 
 import com.ws.request_service.application.dto.ErrorResponse;
+import com.ws.request_service.domain.exception.TokenNotFoundException;
 import jakarta.validation.ConstraintViolationException;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -54,6 +56,30 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.badRequest().body(error);
+    }
+
+    // manejo generico de errores en redis
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleRedisDataAccess(DataAccessException ex) {
+        var error = new ErrorResponse(
+                HttpStatus.SERVICE_UNAVAILABLE.value(),
+                "Data Access Error",
+                "Error al acceder a la fuente de datos (posiblemente Redis)",
+                Map.of("details", ex.getMessage())
+        );
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).body(error);
+    }
+
+    // Maneja errores para el token de redis
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTokenNotFound(TokenNotFoundException ex) {
+        var error = new ErrorResponse(
+                HttpStatus.NOT_FOUND.value(),
+                "Token Not Found",
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
     // Manejo genérico

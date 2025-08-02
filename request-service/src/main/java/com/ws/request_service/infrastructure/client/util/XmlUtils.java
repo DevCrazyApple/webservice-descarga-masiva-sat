@@ -50,7 +50,7 @@ public class XmlUtils {
     public static String emitionBuildTimestamp(RequestModel requestModel) {
         var canonicalTimestamp = new StringBuilder();
         canonicalTimestamp.append("<des:SolicitaDescargaEmitidos xmlns:des=\"http://DescargaMasivaTerceros.sat.gob.mx\">")
-            .append("<des:solicitud RfcEmisor=\"").append(requestModel.getRfcEmisor())
+            .append("<des:solicitud RfcEmisor=\"").append(requestModel.getRfcSolicitante())
             .append("\" EstadoComprobante=\"").append(requestModel.getEstadoComprobante())
             .append("\" FechaInicial=\"").append(requestModel.getFechaInicial())
             .append("\" FechaFinal=\"").append(requestModel.getFechaFinal())
@@ -74,7 +74,7 @@ public class XmlUtils {
     public static String receptionBuildTimestamp(RequestModel requestModel) {
         var canonicalTimestamp = new StringBuilder();
         canonicalTimestamp.append("<des:SolicitaDescargaRecibidos xmlns:des=\"http://DescargaMasivaTerceros.sat.gob.mx\">")
-            .append("<des:solicitud RfcReceptor=\"").append(requestModel.getRfcEmisor())
+            .append("<des:solicitud RfcReceptor=\"").append(requestModel.getRfcSolicitante())
             .append("\" EstadoComprobante=\"").append(requestModel.getEstadoComprobante())
             .append("\" FechaInicial=\"").append(requestModel.getFechaInicial())
             .append("\" FechaFinal=\"").append(requestModel.getFechaFinal())
@@ -109,7 +109,7 @@ public class XmlUtils {
              .append("<s:Header/>")
              .append("<s:Body>")
              .append("<des:SolicitaDescargaEmitidos>")
-             .append("<des:solicitud RfcEmisor=\"").append(requestModel.getRfcEmisor())
+             .append("<des:solicitud RfcEmisor=\"").append(requestModel.getRfcSolicitante())
              .append("\" EstadoComprobante=\"").append(requestModel.getEstadoComprobante())
              .append("\" FechaInicial=\"").append(requestModel.getFechaInicial())
              .append("\" FechaFinal=\"").append(requestModel.getFechaFinal())
@@ -162,7 +162,7 @@ public class XmlUtils {
             .append("<s:Header/>")
             .append("<s:Body>")
             .append("<des:SolicitaDescargaRecibidos>")
-            .append("<des:solicitud RfcReceptor=\"").append(requestModel.getRfcEmisor())
+            .append("<des:solicitud RfcReceptor=\"").append(requestModel.getRfcSolicitante())
             .append("\" EstadoComprobante=\"").append(requestModel.getEstadoComprobante())
             .append("\" FechaInicial=\"").append(requestModel.getFechaInicial())
             .append("\" FechaFinal=\"").append(requestModel.getFechaFinal())

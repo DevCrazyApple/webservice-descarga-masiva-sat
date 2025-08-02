@@ -14,7 +14,7 @@ import java.security.interfaces.RSAPrivateKey;
 @Data
 @Builder
 public class RequestModel {
-    private String rfcEmisor;
+    private String rfcSolicitante;
     private String rfcReceptor;
     private String fechaInicial;
     private String fechaFinal;
@@ -25,8 +25,8 @@ public class RequestModel {
     private X509Certificate certificate;
     private RSAPrivateKey privateKey;
 
-    public RequestModel(String rfcEmisor, String rfcReceptor, String fechaInicial, String fechaFinal, String tipoSolicitud, String tipoComprobante, String estadoComprobante, String token) {
-        this.rfcEmisor = rfcEmisor;
+    public RequestModel(String rfcSolicitante, String rfcReceptor, String fechaInicial, String fechaFinal, String tipoSolicitud, String tipoComprobante, String estadoComprobante, String token) {
+        this.rfcSolicitante = rfcSolicitante;
         this.rfcReceptor = rfcReceptor;
         this.fechaInicial = fechaInicial;
         this.fechaFinal = fechaFinal;

@@ -14,9 +14,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class RequestDownloadCommand {
-    @NotBlank(message = "Rfc Emisor es requerido")
-    @Pattern(regexp = "^[A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3}$", message = "RFC emisor inválido")
-    private String rfcEmisor;
+    @NotBlank(message = "Rfc Solicitante es requerido")
+    @Pattern(regexp = "^[A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3}$", message = "RFC Solicitante inválido")
+    private String rfcSolicitante;
 
     @Pattern(regexp = "^[A-ZÑ&]{3,4}\\d{6}[A-Z0-9]{3}$", message = "RFC receptor inválido")
     private String rfcReceptor;

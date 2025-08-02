@@ -10,7 +10,7 @@ public class MapToEntity {
     public RequestEntity toEntityEmition(RequestModel model) {
         return new RequestEntity(
             null,
-            model.getRfcEmisor(),
+            model.getRfcSolicitante(),
             model.getRfcReceptor(),
             model.getFechaInicial(),
             model.getFechaFinal(),
@@ -25,7 +25,7 @@ public class MapToEntity {
     public RequestEntity toEntityReception(RequestModel model) {
         return new RequestEntity(
             null,
-            model.getRfcEmisor(),
+            model.getRfcSolicitante(),
             model.getRfcReceptor(),
             model.getFechaInicial(),
             model.getFechaFinal(),
