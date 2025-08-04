@@ -17,25 +17,12 @@ public enum Verificar implements CustomCode {
     }
 
     @Override
-    public int getCode() {
-        return code;
-    }
+    public int getCode() { return code; }
 
     @Override
-    public String getMessage() {
-        return message;
-    }
+    public String getMessage() { return message; }
 
     @Override
-    public String getDescription() {
-        return description;
-    }
-
-    public static Verificar fromCode(int code) {
-        for (Verificar c : values()) {
-            if (c.code == code) return c;
-        }
-        return null;
-    }
+    public String getDescription() { return description; }
 }
 

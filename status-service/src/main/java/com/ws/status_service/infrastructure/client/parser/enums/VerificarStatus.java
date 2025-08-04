@@ -20,24 +20,12 @@ public enum VerificarStatus implements CustomCode {
     }
 
     @Override
-    public int getCode() {
-        return code;
-    }
+    public int getCode() { return code; }
 
     @Override
-    public String getMessage() {
-        return message;
-    }
+    public String getMessage() { return message; }
 
     @Override
-    public String getDescription() {
-        return description;
-    }
+    public String getDescription() { return description; }
 
-    public static VerificarStatus fromCode(int code) {
-        for (VerificarStatus c : values()) {
-            if (c.code == code) return c;
-        }
-        return null;
-    }
 }

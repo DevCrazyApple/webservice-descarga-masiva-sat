@@ -44,9 +44,9 @@ public class ResponseParser {
                     .getTextContent());
 
             VerifyModel verifyModel = new VerifyModel(
-                    Solicitud.fromCode(codeSolicitud).getMessage(),
-                    Verificar.fromCode(codeVerificar).getMessage(),
-                    VerificarStatus.fromCode(statusCode).getMessage()
+                    CustomCodeResolver.resolveCode(codeSolicitud).getMessage(),
+                    CustomCodeResolver.resolveCode(codeVerificar).getMessage(),
+                    CustomCodeResolver.resolveCode(statusCode).getMessage()
             );
 
 

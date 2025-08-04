@@ -31,11 +31,5 @@ public enum Solicitud implements CustomCode {
     @Override
     public String getDescription() { return description; }
 
-    public static Solicitud fromCode(int code) {
-        for (Solicitud c : values()) {
-            if (c.code == code) return c;
-        }
-        return null;
-    }
 }
 
