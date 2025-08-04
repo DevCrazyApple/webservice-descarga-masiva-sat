@@ -1,6 +1,7 @@
 package com.ws.request_service.infrastructure.config;
 
 import com.ws.request_service.application.dto.ErrorResponse;
+import com.ws.request_service.domain.exception.SatException;
 import com.ws.request_service.domain.exception.TokenNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.dao.DataAccessException;
@@ -76,6 +77,17 @@ public class GlobalExceptionHandler {
         var error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
                 "Token Not Found",
+                ex.getMessage(),
+                null
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(SatException.class)
+    public ResponseEntity<ErrorResponse> handleSatExc(SatException ex) {
+        var error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Ocurrio un error en la Solicitud",
                 ex.getMessage(),
                 null
         );
