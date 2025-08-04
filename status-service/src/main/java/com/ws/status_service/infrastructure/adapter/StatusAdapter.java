@@ -44,7 +44,11 @@ public class StatusAdapter implements VerifyRequestOut {
         String response = this.client.send(request, statusModel.getToken());
         log.info("**** response:\n{}", response);
 
-        return null;
+        VerifyModel verifyStatus = this.parser.getResult(response);
+        verifyStatus.setRfcSolicitante(statusModel.getRfcSolicitante());
+        verifyStatus.setIdRequest(statusModel.getIdRequest());
+
+        return verifyStatus;
     }
 
     @Override

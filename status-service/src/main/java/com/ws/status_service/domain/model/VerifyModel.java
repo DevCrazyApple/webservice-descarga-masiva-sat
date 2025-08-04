@@ -8,15 +8,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 public class VerifyModel {
-    private Integer codeSolicitud;
-    private Integer codeVerificar;
-    private Integer statusVerificar;
+    private String codeSolicitud;
+    private String codeVerificar;
+    private String statusVerificar;
     private String packagesIds;
+    private String rfcSolicitante;
+    private String idRequest;
 
-    public VerifyModel(Integer codeSolicitud, Integer codeVerificar, Integer statusVerificar) {
+    public VerifyModel(String codeSolicitud, String codeVerificar, String statusVerificar) {
         this.codeSolicitud = codeSolicitud;
         this.codeVerificar = codeVerificar;
         this.statusVerificar = statusVerificar;
     }
-
 }

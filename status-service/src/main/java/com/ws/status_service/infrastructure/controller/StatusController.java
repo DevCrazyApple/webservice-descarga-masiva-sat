@@ -4,6 +4,7 @@ import com.ws.status_service.application.command.ReqStatusCommand;
 import com.ws.status_service.application.dto.ErrorResponse;
 import com.ws.status_service.domain.model.PfxModel;
 import com.ws.status_service.domain.model.StatusModel;
+import com.ws.status_service.domain.model.VerifyModel;
 import com.ws.status_service.domain.port.inbound.VerifyRequestIn;
 import com.ws.status_service.domain.port.outbound.VerifyRequestOut;
 import jakarta.validation.Valid;
@@ -59,26 +60,30 @@ public class StatusController {
         X509Certificate certificate = generateCertificateFromDER(certBytes);
         mapmodel.setCertificate(certificate);
 
-        String idPackages = this.verifyRequestOut.getPackages(mapmodel);
-
-        if (idPackages == null) {
-            var error = new ErrorResponse(
-                HttpStatus.NOT_FOUND.value(),
-                "Request Not Found",
-                String.format("La solicitud sigue en proceso: %s", mapmodel.getIdRequest()),
-                null
-            );
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-        }
+        VerifyModel verifyStatus = this.verifyRequestOut.getPackages(mapmodel);
 
         return ResponseEntity.ok(
-            Map.of(
-                "message", "Se obtuvo el id de la solicitud con éxito",
-                "status", "success",
-                "idrequest", "",
-                "rfc", mapmodel.getRfcSolicitante(),
-                "timeStamp", System.currentTimeMillis()
-            )
+            verifyStatus
         );
+
+//        if (idPackages == null) {
+//            var error = new ErrorResponse(
+//                HttpStatus.NOT_FOUND.value(),
+//                "Request Not Found",
+//                String.format("La solicitud sigue en proceso: %s", mapmodel.getIdRequest()),
+//                null
+//            );
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+//        }
+//
+//        return ResponseEntity.ok(
+//            Map.of(
+//                "message", "Se obtuvo el id de la solicitud con éxito",
+//                "status", "success",
+//                "idrequest", "",
+//                "rfc", mapmodel.getRfcSolicitante(),
+//                "timeStamp", System.currentTimeMillis()
+//            )
+//        );
     }
 }

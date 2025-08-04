@@ -1,6 +1,9 @@
 package com.ws.status_service.infrastructure.client.parser;
 
 import com.ws.status_service.domain.model.VerifyModel;
+import com.ws.status_service.infrastructure.client.parser.enums.Solicitud;
+import com.ws.status_service.infrastructure.client.parser.enums.Verificar;
+import com.ws.status_service.infrastructure.client.parser.enums.VerificarStatus;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -41,9 +44,9 @@ public class ResponseParser {
                     .getTextContent());
 
             VerifyModel verifyModel = new VerifyModel(
-                    codeSolicitud,
-                    codeVerificar,
-                    statusCode
+                    Solicitud.fromCode(codeSolicitud).getMessage(),
+                    Verificar.fromCode(codeVerificar).getMessage(),
+                    VerificarStatus.fromCode(statusCode).getMessage()
             );
 
 
@@ -55,14 +58,9 @@ public class ResponseParser {
                 });
 
                 verifyModel.setPackagesIds(packages.stream().map(Object::toString).collect(Collectors.joining(",")));
-
-                return verifyModel;
-            } else {
-                if (codeVerificar == 300) {
-//                    return "Token invalido";
-                    return null;
-                }
             }
+
+            return verifyModel;
         }
 
         return null;
