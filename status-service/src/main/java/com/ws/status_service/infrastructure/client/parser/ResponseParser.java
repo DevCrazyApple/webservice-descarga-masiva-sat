@@ -1,5 +1,6 @@
 package com.ws.status_service.infrastructure.client.parser;
 
+import com.ws.status_service.domain.model.VerifyModel;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -15,32 +16,51 @@ public class ResponseParser {
      * @param response
      * @return
      */
-    public String getResult(String response) {
+    public VerifyModel getResult(String response) {
         Document doc = convertStringToXMLDocument(response);
 
         //Verify XML document is build correctly
         if (doc != null) {
-            int stateRequest = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
+
+            int codeSolicitud = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
                     .item(0)
                     .getAttributes()
-                    .getNamedItem("EstadoSolicitud").getTextContent());
+                    .getNamedItem("CodigoEstadoSolicitud")
+                    .getTextContent());
 
-            int codStatus = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
+            int codeVerificar = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
                     .item(0)
                     .getAttributes()
-                    .getNamedItem("CodEstatus").getTextContent());
+                    .getNamedItem("CodEstatus")
+                    .getTextContent());
 
-            if (stateRequest == 3) {
+            int statusCode = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
+                    .item(0)
+                    .getAttributes()
+                    .getNamedItem("EstadoSolicitud")
+                    .getTextContent());
+
+            VerifyModel verifyModel = new VerifyModel(
+                    codeSolicitud,
+                    codeVerificar,
+                    statusCode
+            );
+
+
+            if (statusCode == 3) {
                 var packages = new ArrayList<>();
                 var count = doc.getElementsByTagName("IdsPaquetes").getLength();
                 IntStream.range(0, count).forEachOrdered(n -> {
                     packages.add(doc.getElementsByTagName("IdsPaquetes").item(n).getTextContent());
                 });
 
-                return packages.stream().map(Object::toString).collect(Collectors.joining(","));
+                verifyModel.setPackagesIds(packages.stream().map(Object::toString).collect(Collectors.joining(",")));
+
+                return verifyModel;
             } else {
-                if (codStatus == 300) {
-                    return "Token invalido";
+                if (codeVerificar == 300) {
+//                    return "Token invalido";
+                    return null;
                 }
             }
         }

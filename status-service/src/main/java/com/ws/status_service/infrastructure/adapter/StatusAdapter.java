@@ -3,6 +3,7 @@ package com.ws.status_service.infrastructure.adapter;
 import com.ws.status_service.domain.exception.TokenNotFoundException;
 import com.ws.status_service.domain.model.PfxModel;
 import com.ws.status_service.domain.model.StatusModel;
+import com.ws.status_service.domain.model.VerifyModel;
 import com.ws.status_service.domain.port.outbound.VerifyRequestOut;
 import com.ws.status_service.infrastructure.client.SoapClient;
 import com.ws.status_service.infrastructure.client.builder.XmlBuilder;
@@ -35,7 +36,7 @@ public class StatusAdapter implements VerifyRequestOut {
     }
 
     @Override
-    public Optional<?> getPackages(StatusModel statusModel) throws Exception {
+    public VerifyModel getPackages(StatusModel statusModel) throws Exception {
 
         String request = this.builder.build(statusModel);
         log.info("**** request:\n{}", request);
@@ -43,7 +44,7 @@ public class StatusAdapter implements VerifyRequestOut {
         String response = this.client.send(request, statusModel.getToken());
         log.info("**** response:\n{}", response);
 
-        return Optional.empty();
+        return null;
     }
 
     @Override

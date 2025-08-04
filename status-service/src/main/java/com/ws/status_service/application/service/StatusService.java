@@ -4,6 +4,7 @@ import com.ws.status_service.application.command.ReqStatusCommand;
 import com.ws.status_service.application.mapper.CmdToModel;
 import com.ws.status_service.domain.model.PfxModel;
 import com.ws.status_service.domain.model.StatusModel;
+import com.ws.status_service.domain.model.VerifyModel;
 import com.ws.status_service.domain.port.inbound.VerifyRequestIn;
 import com.ws.status_service.domain.port.outbound.VerifyRequestOut;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class StatusService implements VerifyRequestIn {
     }
 
     @Override
-    public String getPackages(StatusModel statusModel) {
+    public VerifyModel getPackages(StatusModel statusModel) throws Exception {
         return this.verifyRequestOut.getPackages(statusModel);
     }
 
