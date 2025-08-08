@@ -1,5 +1,6 @@
 package com.ws.request_service.infrastructure.client.builder;
 
+import com.ws.request_service.domain.model.FoilModel;
 import com.ws.request_service.domain.model.RequestModel;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,4 +29,11 @@ public class XmlBuilder {
         return receptionBuildEnvelope(digest, signature, requestModel);
     }
 
+    public String buildFoil(FoilModel foilModel) throws Exception {
+        String canonicalTimestamp = foilBuildTimestamp(foilModel);
+        String digest = createDigest(canonicalTimestamp);
+        String canonicalSignedInfo = buildSignedInfo(digest);
+        String signature = sign(canonicalSignedInfo, foilModel.getPrivateKey());
+        return foilBuildEnvelope(digest, signature, foilModel);
+    }
 }

@@ -1,30 +1,39 @@
 package com.ws.request_service.application.service;
 
-import com.ws.request_service.infrastructure.client.SoapClient;
-import com.ws.request_service.infrastructure.client.builder.XmlBuilder;
-import com.ws.request_service.infrastructure.client.parser.ResponseParser;
+import com.ws.request_service.domain.model.FoilModel;
+import com.ws.request_service.domain.model.PfxModel;
+import com.ws.request_service.domain.port.inbound.FoilIn;
+import com.ws.request_service.domain.port.inbound.TokenRequestIn;
+import com.ws.request_service.domain.port.outbound.FoilOut;
+import com.ws.request_service.domain.port.outbound.TokenRequestOut;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.security.PrivateKey;
-import java.security.cert.X509Certificate;
-
-import static com.ws.request_service.infrastructure.client.util.CryptoUtils.decodeValue;
 
 @Slf4j
 @Service
-public class FolioSatService {
+public class FolioSatService implements FoilIn, TokenRequestIn {
 
-    private final SoapClient client;
-    private final XmlBuilder builder;
-    private final ResponseParser parser;
+    private final FoilOut foilOut;
+    private final TokenRequestOut tokenRequestOut;
 
-    public FolioSatService(@Qualifier(value = "soapClientFolio") SoapClient client, XmlBuilder builder, ResponseParser parser) {
-        this.client = client;
-        this.builder = builder;
-        this.parser = parser;
+    public FolioSatService(FoilOut foilOut, TokenRequestOut tokenRequestOut) {
+        this.foilOut = foilOut;
+        this.tokenRequestOut = tokenRequestOut;
     }
 
+    @Override
+    public String requestDownload(FoilModel foilModel) throws Exception {
+        return this.foilOut.requestDownload(foilModel);
+    }
+
+    @Override
+    public String getToken(String rfc) {
+        return this.tokenRequestOut.getToken(rfc);
+    }
+
+    @Override
+    public PfxModel getPfx(String rfc) {
+        return this.tokenRequestOut.getPfx(rfc);
+    }
 }

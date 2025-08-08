@@ -1,18 +1,19 @@
 package com.ws.request_service.infrastructure.controller;
 
+import com.ws.request_service.application.command.FoilCommand;
 import com.ws.request_service.application.command.RequestDownloadCommand;
 import com.ws.request_service.application.dto.ErrorResponse;
+import com.ws.request_service.domain.model.FoilModel;
 import com.ws.request_service.domain.model.PfxModel;
 import com.ws.request_service.domain.model.RequestModel;
 import com.ws.request_service.domain.port.inbound.EmitionRequestIn;
 import com.ws.request_service.domain.port.inbound.ReceptionRequestIn;
 import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
+import com.ws.request_service.domain.port.outbound.FoilOut;
 import com.ws.request_service.domain.port.outbound.ReceptionRequestOut;
 import com.ws.request_service.domain.port.outbound.TokenRequestOut;
-import com.ws.request_service.infrastructure.entity.RequestEntity;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Request;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -40,14 +41,16 @@ public class RequestController {
 
     private final ReceptionRequestIn receptionRequestIn;
     private final ReceptionRequestOut receptionRequestOut;
+    private final FoilOut foilOut;
 
     private final TokenRequestOut tokenRequestOut;
 
-    public RequestController(EmitionRequestIn emitionRequestIn, EmitionRequestOut emitionRequestOut, ReceptionRequestIn receptionRequestIn, ReceptionRequestOut receptionRequestOut, TokenRequestOut tokenRequestOut) {
+    public RequestController(EmitionRequestIn emitionRequestIn, EmitionRequestOut emitionRequestOut, ReceptionRequestIn receptionRequestIn, ReceptionRequestOut receptionRequestOut, FoilOut foilOut, TokenRequestOut tokenRequestOut) {
         this.emitionRequestIn = emitionRequestIn;
         this.emitionRequestOut = emitionRequestOut;
         this.receptionRequestIn = receptionRequestIn;
         this.receptionRequestOut = receptionRequestOut;
+        this.foilOut = foilOut;
         this.tokenRequestOut = tokenRequestOut;
     }
 
@@ -97,6 +100,7 @@ public class RequestController {
         );
     }
 
+
     @PostMapping(value = "/reception")
     public ResponseEntity<?> receptionGenerateRequest(@Valid @RequestBody RequestDownloadCommand requestDownloadCommand) throws Exception {
 
@@ -130,6 +134,45 @@ public class RequestController {
             );
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
         }
+
+        return ResponseEntity.ok(
+            Map.of(
+                "message", "Se obtuvo el id de la solicitud con éxito",
+                "status", "success",
+                "idrequest", idrequest,
+                "rfc", mapmodel.getRfcSolicitante(),
+                "timeStamp", System.currentTimeMillis()
+            )
+        );
+    }
+
+
+    @PostMapping(value = "/foil")
+    public  ResponseEntity<?> foilGenerate(@Valid @RequestBody FoilCommand cmd) throws Exception {
+
+        // map content
+        FoilModel mapmodel = new FoilModel(
+            cmd.getRfcSolicitante(),
+            cmd.getFolio()
+        );
+
+        // obtenemos el pfx haciendo una llamada al microservicio de auth
+        String token = this.tokenRequestOut.getToken(mapmodel.getRfcSolicitante());
+        mapmodel.setToken(token);
+
+        // obtenemos el pfx haciendo una llamada al microservicio de auth
+        PfxModel outPfx = this.tokenRequestOut.getPfx(mapmodel.getRfcSolicitante());
+
+        byte[] keyBytes = Base64.getDecoder().decode(outPfx.getKey());
+        RSAPrivateKey privateKey = generatePrivateKeyFromDER(keyBytes);
+        mapmodel.setPrivateKey(privateKey);
+
+        byte[] certBytes = Base64.getDecoder().decode(outPfx.getCert());
+        X509Certificate certificate = generateCertificateFromDER(certBytes);
+        mapmodel.setCertificate(certificate);
+
+        // get id
+        String idrequest = this.foilOut.requestDownload(mapmodel);
 
         return ResponseEntity.ok(
             Map.of(

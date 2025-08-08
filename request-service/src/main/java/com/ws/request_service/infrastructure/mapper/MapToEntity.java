@@ -1,6 +1,8 @@
 package com.ws.request_service.infrastructure.mapper;
 
+import com.ws.request_service.domain.model.FoilModel;
 import com.ws.request_service.domain.model.RequestModel;
+import com.ws.request_service.infrastructure.entity.FoilEntity;
 import com.ws.request_service.infrastructure.entity.RequestEntity;
 import org.springframework.stereotype.Component;
 
@@ -34,6 +36,15 @@ public class MapToEntity {
             model.getEstadoComprobante(),
             null,
             "ReceptionSatService"
+        );
+    }
+
+    public FoilEntity toEntityFoil(FoilModel model) {
+        return new FoilEntity(
+            null,
+            model.getRfcSolicitante(),
+            model.getIdRequest(),
+            "FoilSatService"
         );
     }
 }

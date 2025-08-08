@@ -1,9 +1,7 @@
 package com.ws.request_service.infrastructure.adapter;
 
-import com.ws.request_service.domain.model.PfxModel;
 import com.ws.request_service.domain.model.RequestModel;
 import com.ws.request_service.domain.port.outbound.EmitionRequestOut;
-import com.ws.request_service.domain.port.outbound.TokenRequestOut;
 import com.ws.request_service.infrastructure.client.SoapClient;
 import com.ws.request_service.infrastructure.client.SoapClientProvider;
 import com.ws.request_service.infrastructure.client.builder.XmlBuilder;
