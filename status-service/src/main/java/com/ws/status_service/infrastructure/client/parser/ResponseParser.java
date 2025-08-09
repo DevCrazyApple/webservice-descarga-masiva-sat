@@ -1,9 +1,7 @@
 package com.ws.status_service.infrastructure.client.parser;
 
 import com.ws.status_service.domain.model.VerifyModel;
-import com.ws.status_service.infrastructure.client.parser.enums.Solicitud;
-import com.ws.status_service.infrastructure.client.parser.enums.Verificar;
-import com.ws.status_service.infrastructure.client.parser.enums.VerificarStatus;
+import com.ws.status_service.infrastructure.client.parser.enums.BaseCodes;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
@@ -25,11 +23,16 @@ public class ResponseParser {
         //Verify XML document is build correctly
         if (doc != null) {
 
-            int codeSolicitud = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
-                    .item(0)
-                    .getAttributes()
-                    .getNamedItem("CodigoEstadoSolicitud")
-                    .getTextContent());
+            int codeSolicitud = BaseCodes.Unknow.getCode();
+            try {
+                codeSolicitud = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
+                        .item(0)
+                        .getAttributes()
+                        .getNamedItem("CodigoEstadoSolicitud")
+                        .getTextContent());
+            } catch (Exception e) {
+
+            }
 
             int codeVerificar = Integer.parseInt(doc.getElementsByTagName("VerificaSolicitudDescargaResult")
                     .item(0)

@@ -48,6 +48,7 @@ public class StatusController {
 
         // obtenemos el pfx haciendo una llamada al microservicio de auth
         String token = this.verifyRequestOut.getToken(mapmodel.getRfcSolicitante());
+        mapmodel.setToken(token);
 
         // obtenemos el pfx haciendo una llamada al microservicio de auth
         PfxModel outPfx = this.verifyRequestOut.getPfx(mapmodel.getRfcSolicitante());
@@ -75,15 +76,5 @@ public class StatusController {
 //            );
 //            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
 //        }
-//
-//        return ResponseEntity.ok(
-//            Map.of(
-//                "message", "Se obtuvo el id de la solicitud con éxito",
-//                "status", "success",
-//                "idrequest", "",
-//                "rfc", mapmodel.getRfcSolicitante(),
-//                "timeStamp", System.currentTimeMillis()
-//            )
-//        );
     }
 }

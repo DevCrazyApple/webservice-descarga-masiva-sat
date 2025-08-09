@@ -13,6 +13,9 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class RedisConfig {
 
+    @Value("${redis.stream.status}")
+    private String streamName;
+
     @Bean
     public RedisTemplate<String, ?> redisTemplate(RedisConnectionFactory factory) {
 
@@ -44,5 +47,20 @@ public class RedisConfig {
     @Bean
     public MessagePublisher messagePublisher(RedisTemplate<String, Object> pubRedisTemplate, ChannelTopic topic) {
         return new MessagePublisher(pubRedisTemplate, topic);
+    }
+
+
+    @Bean
+    public RedisTemplate<String, Object> streamRedisTemplate(RedisConnectionFactory factory) {
+        var template = new RedisTemplate<String, Object>();
+        template.setConnectionFactory(factory);
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
+        return template;
+    }
+
+    @Bean
+    public String statusStreamName() {
+        return streamName;
     }
 }
