@@ -1,5 +1,8 @@
 package com.ws.download_service.infrastructure.redis;
 
+import com.ws.download_service.domain.model.DownloadModel;
+import com.ws.download_service.domain.model.PackageModel;
+import com.ws.download_service.domain.port.outbound.DownloadRequestOut;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,11 +13,17 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.security.cert.X509Certificate;
+import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static com.ws.download_service.infrastructure.client.util.CryptoUtils.generateCertificateFromDER;
+import static com.ws.download_service.infrastructure.client.util.CryptoUtils.generatePrivateKeyFromDER;
 
 @Slf4j
 @Service
@@ -22,6 +31,7 @@ public class StatusStreamConsumer {
     private final RedisTemplate<String, Object> streamRedisTemplate;
     private final String streamName;
     private final ExecutorService executor = Executors.newFixedThreadPool(4);
+    private final DownloadRequestOut downloadRequestOut;
 
     // Identificador único del consumidor para permitir múltiples instancias
     private final String consumerName;
@@ -34,10 +44,11 @@ public class StatusStreamConsumer {
 
     public StatusStreamConsumer(
             @Qualifier("streamRedisTemplate") RedisTemplate<String, Object> streamRedisTemplate,
-            @Qualifier("statusStreamName") String streamName,
+            @Qualifier("statusStreamName") String streamName, DownloadRequestOut downloadRequestOut,
             @Value("${redis.consumer.name:}") String configuredConsumerName) {
         this.streamRedisTemplate = streamRedisTemplate;
         this.streamName = streamName;
+        this.downloadRequestOut = downloadRequestOut;
         if (configuredConsumerName == null || configuredConsumerName.isBlank()) {
             this.consumerName = "processor-" + java.util.UUID.randomUUID();
         } else {
@@ -76,7 +87,13 @@ public class StatusStreamConsumer {
 
         if (records != null && !records.isEmpty()) {
             for (MapRecord<String, Object, Object> record : records) {
-                executor.submit(() -> handleMessage(record));
+                executor.submit(() -> {
+                    try {
+                        handleMessage(record);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         }
     }
@@ -105,7 +122,13 @@ public class StatusStreamConsumer {
 
                     if (!claimed.isEmpty()) {
                         for (MapRecord<String, Object, Object> record : claimed) {
-                            executor.submit(() -> handleMessage(record));
+                            executor.submit(() -> {
+                                try {
+                                    handleMessage(record);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            });
                         }
                     }
                 }
@@ -114,24 +137,25 @@ public class StatusStreamConsumer {
     }
 
 
-    private void handleMessage(MapRecord<String, Object, Object> record) {
+    private void handleMessage(MapRecord<String, Object, Object> record) throws Exception {
         Map<Object, Object> data = record.getValue();
 
         String rfcSolicitante = (String) data.get("rfcSolicitante");
         String idRequest = (String) data.get("idRequest");
-        String token = (String) data.get("token");
-        String privateKey = (String) data.get("privateKey");
-        String certificate = (String) data.get("certificate");
 
 //        System.out.printf("🛠️ Procesando mensaje - RFC: %s, ID: %s%n", rfc, id);
         log.info("Procesando mensaje - RFC: {}, ID: {}", rfcSolicitante, idRequest);
 
-        // Simulación del proceso
-        try {
-            Thread.sleep(500); // Simular trabajo
-        } catch (InterruptedException ignored) {
-            Thread.currentThread().interrupt();
-        }
+
+        // preparamos el paquete y enviamos a descargar
+        PackageModel model = new PackageModel(
+            rfcSolicitante,
+            idRequest
+        );
+        this.downloadRequestOut.getDownload(model);
+
+        // sleep
+        Thread.sleep(500);
 
         // Confirmar y borrar mensaje procesado
         streamRedisTemplate.opsForStream().acknowledge(streamName, GROUP_NAME, record.getId());
