@@ -1,13 +1,14 @@
 package com.ws.download_service.application.service;
 
-import com.ws.download_service.domain.model.DownloadModel;
 import com.ws.download_service.domain.model.PackageModel;
 import com.ws.download_service.domain.model.PfxModel;
 import com.ws.download_service.domain.port.inbound.DownloadRequestIn;
 import com.ws.download_service.domain.port.inbound.TokenRequestIn;
 import com.ws.download_service.domain.port.outbound.DownloadRequestOut;
 import com.ws.download_service.domain.port.outbound.TokenRequestOut;
+import org.springframework.stereotype.Service;
 
+@Service
 public class DownloadService implements DownloadRequestIn, TokenRequestIn {
 
     private final DownloadRequestOut downloadRequestOut;

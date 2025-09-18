@@ -1,6 +1,6 @@
 package com.ws.download_service.infrastructure.client.parser;
 
-import com.ws.status_service.infrastructure.client.parser.enums.*;
+import com.ws.download_service.infrastructure.client.parser.enums.*;
 
 public class CustomCodeResolver {
     public static CustomCode resolveCode(int code) {

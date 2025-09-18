@@ -1,6 +1,5 @@
 package com.ws.download_service.infrastructure.redis;
 
-import com.ws.download_service.domain.model.DownloadModel;
 import com.ws.download_service.domain.model.PackageModel;
 import com.ws.download_service.domain.port.outbound.DownloadRequestOut;
 import jakarta.annotation.PostConstruct;
@@ -13,17 +12,12 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.security.cert.X509Certificate;
-import java.security.interfaces.RSAPrivateKey;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static com.ws.download_service.infrastructure.client.util.CryptoUtils.generateCertificateFromDER;
-import static com.ws.download_service.infrastructure.client.util.CryptoUtils.generatePrivateKeyFromDER;
 
 @Slf4j
 @Service
