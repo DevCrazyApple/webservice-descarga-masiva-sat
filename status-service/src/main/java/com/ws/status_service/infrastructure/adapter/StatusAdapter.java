@@ -1,23 +1,20 @@
 package com.ws.status_service.infrastructure.adapter;
 
 import com.ws.status_service.domain.exception.TokenNotFoundException;
-import com.ws.status_service.domain.model.PfxModel;
-import com.ws.status_service.domain.model.PubModel;
-import com.ws.status_service.domain.model.StatusModel;
-import com.ws.status_service.domain.model.VerifyModel;
+import com.ws.status_service.domain.model.*;
 import com.ws.status_service.domain.port.outbound.VerifyRequestOut;
 import com.ws.status_service.infrastructure.client.SoapClient;
 import com.ws.status_service.infrastructure.client.builder.XmlBuilder;
 import com.ws.status_service.infrastructure.client.parser.ResponseParser;
 import com.ws.status_service.infrastructure.client.parser.enums.VerificarStatus;
-import com.ws.status_service.infrastructure.redis.MessagePublisher;
+import com.ws.status_service.infrastructure.entity.StatusEntity;
+import com.ws.status_service.infrastructure.mapper.MapToEntity;
 import com.ws.status_service.infrastructure.redis.StatusStreamPublisher;
 import com.ws.status_service.infrastructure.redis.TokenCacheAdapter;
+import com.ws.status_service.infrastructure.repository.StatusRepo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Base64;
 
 
 @Slf4j
@@ -32,14 +29,18 @@ public class StatusAdapter implements VerifyRequestOut {
     private final ResponseParser parser;
     private final SoapClient client;
     private final StatusStreamPublisher statusStreamPublisher;
+    private final MapToEntity mapper;
+    private final StatusRepo statusRepo;
 
-    public StatusAdapter(TokenCacheAdapter tokenCacheAdapter, RestTemplate restTemplate, XmlBuilder builder, ResponseParser parser, SoapClient client, StatusStreamPublisher statusStreamPublisher) {
+    public StatusAdapter(TokenCacheAdapter tokenCacheAdapter, RestTemplate restTemplate, XmlBuilder builder, ResponseParser parser, SoapClient client, StatusStreamPublisher statusStreamPublisher, MapToEntity mapper, StatusRepo statusRepo) {
         this.tokenCacheAdapter = tokenCacheAdapter;
         this.restTemplate = restTemplate;
         this.builder = builder;
         this.parser = parser;
         this.client = client;
         this.statusStreamPublisher = statusStreamPublisher;
+        this.mapper = mapper;
+        this.statusRepo = statusRepo;
     }
 
     @Override
@@ -55,28 +56,23 @@ public class StatusAdapter implements VerifyRequestOut {
         verifyStatus.setRfcSolicitante(statusModel.getRfcSolicitante());
         verifyStatus.setIdRequest(statusModel.getIdRequest());
 
-//        // mandar al pub redis para que inicie la descarga en parallelo
-//        if (verifyStatus.getStatusVerificar().equalsIgnoreCase(VerificarStatus.Finished.getMessage())) {
-//
-//            PubModel sendRedis = new PubModel(
-//                verifyStatus.getRfcSolicitante(),
-//                verifyStatus.getIdRequest(),
-//                statusModel.getToken(),
-//                Base64.getEncoder().encodeToString(statusModel.getPrivateKey().getEncoded()),
-//                Base64.getEncoder().encodeToString(statusModel.getCertificate().getEncoded())
-//            );
-//            this.statusStreamPublisher.publish(sendRedis);
-//        }
+        // mapeamos el contenido para el repo y guardamos
+        StatusEntity entity = this.mapper.toEntity(verifyStatus);
 
-        PubModel sendRedis = new PubModel(
-            verifyStatus.getRfcSolicitante(),
-            verifyStatus.getIdRequest(),
-            statusModel.getToken(),
-            Base64.getEncoder().encodeToString(statusModel.getPrivateKey().getEncoded()),
-            Base64.getEncoder().encodeToString(statusModel.getCertificate().getEncoded())
-        );
-        this.statusStreamPublisher.publish(sendRedis);
+        // mandar al pub redis para que inicie la descarga en parallelo
+        if (verifyStatus.getStatusVerificar().equalsIgnoreCase(VerificarStatus.Finished.getMessage())) {
 
+            PubModel sendRedis = new PubModel(
+                verifyStatus.getRfcSolicitante(),
+                verifyStatus.getIdRequest()
+            );
+            this.statusStreamPublisher.publish(sendRedis);
+
+            // cambiamos a true porque se manda en parallelo la info
+            entity.setProcessed(true);
+        }
+
+        this.statusRepo.saveOrUpdate(entity);
         return verifyStatus;
     }
 
@@ -89,5 +85,22 @@ public class StatusAdapter implements VerifyRequestOut {
     @Override
     public PfxModel getPfx(String rfc) {
         return this.restTemplate.getForObject(API_URL_AUTH, PfxModel.class, rfc);
+    }
+
+    /**
+     * find info
+     * @param idrequest
+     * @return
+     */
+    @Override
+    public PackageModel getPackage(String idrequest) {
+
+        StatusEntity exists = this.statusRepo.findByIdRequest(idrequest);
+
+        return new PackageModel(
+            exists.getPackagesIds(),
+            exists.getRfcSolicitante(),
+            exists.getIdRequest()
+        );
     }
 }

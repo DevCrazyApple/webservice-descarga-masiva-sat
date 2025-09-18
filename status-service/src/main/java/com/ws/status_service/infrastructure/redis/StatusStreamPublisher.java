@@ -23,14 +23,15 @@ public class StatusStreamPublisher {
     }
 
     public void publish(PubModel message) {
-        log.info("**** enviando mensaje al stream");
+        // log.info("**** enviando mensaje al stream");
         try {
             streamOps.add(streamName, Map.of(
                 "rfcSolicitante", message.getRfcSolicitante(),
-                "idRequest", message.getIdRequest(),
-                "token", message.getToken(),
-                "privateKey", message.getPrivateKey(),
-                "certificate", message.getCertificate()
+                "idRequest", message.getIdRequest()
+//                "packagesIds", message.getPackagesIds(),
+//                "token", message.getToken(),
+//                "privateKey", message.getPrivateKey(),
+//                "certificate", message.getCertificate()
             ));
             log.info("Mensaje publicado exitosamente.");
         } catch (Exception e) {

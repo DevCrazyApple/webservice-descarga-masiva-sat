@@ -1,27 +1,21 @@
 package com.ws.status_service.infrastructure.controller;
 
 import com.ws.status_service.application.command.ReqStatusCommand;
-import com.ws.status_service.application.dto.ErrorResponse;
 import com.ws.status_service.domain.model.PfxModel;
 import com.ws.status_service.domain.model.StatusModel;
 import com.ws.status_service.domain.model.VerifyModel;
 import com.ws.status_service.domain.port.inbound.VerifyRequestIn;
 import com.ws.status_service.domain.port.outbound.VerifyRequestOut;
 import jakarta.validation.Valid;
-import lombok.Value;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateKey;
 import java.util.Base64;
-import java.util.Map;
 
 import static com.ws.status_service.infrastructure.client.util.CryptoUtils.generateCertificateFromDER;
 import static com.ws.status_service.infrastructure.client.util.CryptoUtils.generatePrivateKeyFromDER;
@@ -66,15 +60,16 @@ public class StatusController {
         return ResponseEntity.ok(
             verifyStatus
         );
+    }
 
-//        if (idPackages == null) {
-//            var error = new ErrorResponse(
-//                HttpStatus.NOT_FOUND.value(),
-//                "Request Not Found",
-//                String.format("La solicitud sigue en proceso: %s", mapmodel.getIdRequest()),
-//                null
-//            );
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
-//        }
+
+    /**
+     * obtenemos el listado de paquetes
+     * @param idrequest
+     * @return
+     */
+    @GetMapping(value = "/package/{idrequest}")
+    public ResponseEntity<?> getPackage(@PathVariable @NotBlank String idrequest) {
+        return ResponseEntity.ok(this.verifyRequestOut.getPackage(idrequest));
     }
 }

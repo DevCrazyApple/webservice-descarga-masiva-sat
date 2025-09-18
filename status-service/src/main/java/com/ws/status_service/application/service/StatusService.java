@@ -2,6 +2,7 @@ package com.ws.status_service.application.service;
 
 import com.ws.status_service.application.command.ReqStatusCommand;
 import com.ws.status_service.application.mapper.CmdToModel;
+import com.ws.status_service.domain.model.PackageModel;
 import com.ws.status_service.domain.model.PfxModel;
 import com.ws.status_service.domain.model.StatusModel;
 import com.ws.status_service.domain.model.VerifyModel;
@@ -38,5 +39,10 @@ public class StatusService implements VerifyRequestIn {
     @Override
     public StatusModel toModel(ReqStatusCommand cmd) {
         return this.mapper.toModel(cmd);
+    }
+
+    @Override
+    public PackageModel getPackage(String idrequest) {
+        return this.getPackage(idrequest);
     }
 }

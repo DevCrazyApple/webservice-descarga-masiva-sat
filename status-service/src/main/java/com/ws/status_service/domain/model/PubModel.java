@@ -11,7 +11,13 @@ import lombok.NoArgsConstructor;
 public class PubModel {
     private String rfcSolicitante;
     private String idRequest;
+    private String packagesIds;
     private String token;
     private String privateKey;
     private String certificate;
+
+    public PubModel(String rfcSolicitante, String idRequest) {
+        this.rfcSolicitante = rfcSolicitante;
+        this.idRequest = idRequest;
+    }
 }
